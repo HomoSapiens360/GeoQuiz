@@ -1,0 +1,31 @@
+package com.example.geoquiz
+
+import android.annotation.SuppressLint
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import android.widget.Toast
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var trueButton: Button
+    private lateinit var falseButton: Button
+
+    @SuppressLint("MissingInflatedId")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        trueButton = findViewById(R.id.true_button)
+        falseButton = findViewById(R.id.false_button)
+
+        trueButton.setOnClickListener { view: View ->
+            Toast.makeText(this,R.string.toast_correct,Toast.LENGTH_SHORT).show()
+        }
+        falseButton.setOnClickListener{view: View ->
+            Toast.makeText(this,R.string.toast_incorrect,Toast.LENGTH_SHORT).show()
+        }
+
+    }
+}
