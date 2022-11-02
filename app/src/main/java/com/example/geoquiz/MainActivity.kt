@@ -3,7 +3,7 @@ package com.example.geoquiz
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
+//import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -35,19 +35,20 @@ class MainActivity : AppCompatActivity() {
         nextButton = findViewById(R.id.next_button)
 
         trueButton.setOnClickListener { view: View ->
-            val toast = Toast.makeText(
-                this,R.string.toast_correct,Toast.LENGTH_SHORT).run{
-                    this.setGravity(Gravity.TOP,0,0)
-                    this
-            }.show()
+            Toast.makeText(this,R.string.toast_correct,Toast.LENGTH_SHORT).show()
         }
         falseButton.setOnClickListener{view: View ->
-            val toast = Toast.makeText(
-                this,R.string.toast_incorrect,Toast.LENGTH_SHORT).run{
-                    this.setGravity(Gravity.TOP,0,0)
-                    this
-            }.show()
+            Toast.makeText(this,R.string.toast_incorrect,Toast.LENGTH_SHORT).show()
         }
+        nextButton.setOnClickListener { view: View ->
+            currentIndex = (currentIndex + 1) % questionBank.size
+            updateQuestion()
+        }
+
+        updateQuestion()
+    }
+
+    private fun updateQuestion(){
         val questionTextResId = questionBank[currentIndex].textResId
         questionTextView.setText(questionTextResId)
     }
