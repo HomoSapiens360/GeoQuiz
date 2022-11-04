@@ -6,13 +6,14 @@ import android.os.Bundle
 //import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var nextButton: Button
-    private lateinit var prevButton: Button
+    private lateinit var nextButton: ImageButton
+    private lateinit var prevButton: ImageButton
     private lateinit var trueButton: Button
     private lateinit var falseButton: Button
     private lateinit var questionTextView: TextView
@@ -39,11 +40,9 @@ class MainActivity : AppCompatActivity() {
 
         trueButton.setOnClickListener { view: View ->
             checkAnswer(true)
-            //Toast.makeText(this,R.string.toast_correct,Toast.LENGTH_SHORT).show()
         }
         falseButton.setOnClickListener{view: View ->
             checkAnswer(false)
-            //Toast.makeText(this,R.string.toast_incorrect,Toast.LENGTH_SHORT).show()
         }
         nextButton.setOnClickListener { view: View ->
             currentIndex = (currentIndex + 1) % questionBank.size
@@ -55,7 +54,6 @@ class MainActivity : AppCompatActivity() {
                 currentIndex = questionBank.size - 1
             updateQuestion()
         }
-
         questionTextView.setOnClickListener { view: View ->
             currentIndex = (currentIndex + 1) % questionBank.size
             updateQuestion()
