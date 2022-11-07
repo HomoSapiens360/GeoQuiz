@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+
 
 private const val TAG = "MainActivity"
 
@@ -19,23 +21,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var trueButton: Button
     private lateinit var falseButton: Button
     private lateinit var questionTextView: TextView
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americans, true),
-        Question(R.string.question_asia, true)
-    )
-    private var currentIndex = 0
-    private var correctAnswers = 0
+    private val quizViewModel: QuizViewModel by lazy {
+        ViewModelProvider(this).get(QuizViewModel::class.java)
+    }
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
+        super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(Bundle?) called")
+        setContentView(R.layout.activity_main)
 
         trueButton = findViewById(R.id.true_button)
         falseButton = findViewById(R.id.false_button)
@@ -43,31 +39,25 @@ class MainActivity : AppCompatActivity() {
         questionTextView = findViewById(R.id.question_text_view)
 
         trueButton.setOnClickListener { view: View ->
-            correctAnswers = if(checkAnswer(true))
-                correctAnswers + 1 else correctAnswers + 0
+            quizViewModel.correctAnswers = if(checkAnswer(true))
+                quizViewModel.correctAnswers + 1 else quizViewModel.correctAnswers + 0
             blockAnswerButons()
         }
         falseButton.setOnClickListener{view: View ->
-            correctAnswers = if(checkAnswer(false))
-                correctAnswers + 1 else correctAnswers + 0
+            quizViewModel.correctAnswers = if(checkAnswer(false))
+                quizViewModel.correctAnswers + 1 else quizViewModel.correctAnswers + 0
             blockAnswerButons()
         }
         nextButton.setOnClickListener { view: View ->
-            currentIndex++
-            if(currentIndex == questionBank.size){
+            if(quizViewModel.moveToNext())
                 showResult()
-                currentIndex = 0;
-            }
             unblockAnswerButtons()
             updateQuestion()
         }
 
         questionTextView.setOnClickListener { view: View ->
-            currentIndex++
-            if(currentIndex == questionBank.size){
+            if(quizViewModel.moveToNext())
                 showResult()
-                currentIndex = 0;
-            }
             unblockAnswerButtons()
             updateQuestion()
         }
@@ -100,13 +90,13 @@ class MainActivity : AppCompatActivity() {
     } // onDestroy
 
     private fun updateQuestion(){
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
     }
 
     private fun checkAnswer(userAnswer: Boolean): Boolean{
         val isCorrectAnswer: Boolean
-        val correctAnswer = questionBank[currentIndex].answer
+        val correctAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = if (userAnswer == correctAnswer){
             isCorrectAnswer = true
             R.string.toast_correct
@@ -130,8 +120,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showResult(){
         Toast.makeText(this,
-            "You answered ${correctAnswers * 100 / questionBank.size}%" +
+            "You answered ${quizViewModel.correctAnswers 
+                    * 100 / quizViewModel.questionBankSize}%" +
                     " of the questions correctly", Toast.LENGTH_LONG).show()
+        quizViewModel.correctAnswers = 0
     }
 
 }
